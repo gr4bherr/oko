@@ -8,7 +8,7 @@ print("\nto move, press wasd")
 
 # init
 pygame.init()
-background = pygame.image.load("map.jpg")
+background = pygame.image.load("map2.jpg")
 screen_w, screen_h = background.get_size()
 screen = pygame.display.set_mode((screen_w, screen_h))
 points = pygame.display.set_mode((screen_w, screen_h))
@@ -17,23 +17,24 @@ clock = pygame.time.Clock()
 # rect
 x, y = 0, 0
 rect_w, rect_h = 20, 20
-step = 5
+step = int(screen_h * 0.01)
 
+running = True
 pointarr = []
+black = (0,0,0)
+dist = 100
 
 # primitive collision
 def nearwall(x,y):
-  white = (255,255,255,255)
   # i know dims are ratio 1:1, but what if they are not
   for i in range(rect_w):
-    if background.get_at((x+i,y)) == white or background.get_at((x+i,y+rect_h)) == white:
+    if background.get_at((x+i,y)) == black or background.get_at((x+i,y+rect_h)) == black:
       return False
   for i in range(rect_h):
-    if background.get_at((x,y+i)) == white or background.get_at((x+rect_w,y+i)) == white:
+    if background.get_at((x,y+i)) == black or background.get_at((x+rect_w,y+i)) == black:
       return False
   return True
 
-running = True
 while running:
   pygame.time.delay(10)
   for event in pygame.event.get():
@@ -53,14 +54,16 @@ while running:
   #print(f"x:{x}, y:{y}")
 
   # lidar
-  dist = 100
   for angle in np.linspace(0, 2 * math.pi):
-    for d in (0, dist, 5):
-      xx = int(dist * math.cos(angle)) + x
-      yy = int(dist * math.sin(angle)) + y
-      if 0 < xx < screen_w and 0 < yy < screen_h:
-        if background.get_at((xx,yy)) == (255,255,255,255):
-          pointarr.append((xx,yy))
+    for d in range(0, dist):
+      print(d)
+      xx = int(d * math.cos(angle)) + x
+      yy = int(d * math.sin(angle)) + y
+      if 0 < xx < screen_w and 0 < yy < screen_h: # in screen
+        if background.get_at((xx,yy)) == black: # is wall
+          if (xx,yy) not in pointarr: # no duplicates
+            pointarr.append((xx,yy))
+          break # break so it doesn't see through walls
   
   # draw
   points.fill("black")
