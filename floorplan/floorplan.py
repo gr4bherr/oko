@@ -8,7 +8,7 @@ print("\nto move, press wasd")
 
 # init
 pygame.init()
-background = pygame.image.load("map2.jpg")
+background = pygame.image.load("map.jpg")
 screen_w, screen_h = background.get_size()
 screen = pygame.display.set_mode((screen_w, screen_h))
 points = pygame.display.set_mode((screen_w, screen_h))
@@ -56,7 +56,6 @@ while running:
   # lidar
   for angle in np.linspace(0, 2 * math.pi):
     for d in range(0, dist):
-      print(d)
       xx = int(d * math.cos(angle)) + x
       yy = int(d * math.sin(angle)) + y
       if 0 < xx < screen_w and 0 < yy < screen_h: # in screen
