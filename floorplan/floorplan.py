@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import sys
 import pygame
 import math
 import numpy as np
+import random
 
 print("\nto move, press wasd")
 
@@ -22,7 +22,7 @@ step = int(screen_h * 0.01)
 running = True
 pointarr = []
 black = (0,0,0)
-dist = 100
+lidarrange = 200
 
 # primitive collision
 def nearwall(x,y):
@@ -54,16 +54,17 @@ while running:
   #print(f"x:{x}, y:{y}")
 
   # lidar
-  for angle in np.linspace(0, 2 * math.pi):
-    for d in range(0, dist):
-      xx = int(d * math.cos(angle)) + x
-      yy = int(d * math.sin(angle)) + y
+  pointarr = [] # if uncommented, shows only current lidar points
+  for angle in np.linspace(0, 2 * math.pi, 100):
+    for d in range(0, lidarrange):
+      xx = int(d * math.cos(angle)) + x + rect_w // 2
+      yy = int(d * math.sin(angle)) + y + rect_h // 2
       if 0 < xx < screen_w and 0 < yy < screen_h: # in screen
         if background.get_at((xx,yy)) == black: # is wall
           if (xx,yy) not in pointarr: # no duplicates
             pointarr.append((xx,yy))
           break # break so it doesn't see through walls
-  
+
   # draw
   points.fill("black")
   for pxl in pointarr:
